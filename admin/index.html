@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin tool — Insurance Share</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-back" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></symbol>
+  </svg>
+
+  <header class="topbar">
+    <span class="brand"><span class="brand-mark" aria-hidden="true"></span> Admin tool</span>
+    <a class="link" href="../">Open the public site</a>
+  </header>
+
+  <main class="page admin">
+
+    <p id="loading" class="notice">Loading…</p>
+    <p id="fatal" class="notice notice-error" hidden></p>
+
+    <div id="app" hidden>
+
+      <section class="panel notice-box">
+        <h2>How this admin tool works</h2>
+        <p>
+          This page has <strong>no password on purpose</strong>. A website hosted on GitHub Pages cannot keep a secret,
+          so a password here would only look secure. Instead, this page can <strong>not change your website by itself</strong>.
+          It prepares the changes, and the changes only go live when they are saved to your GitHub repository —
+          either by you uploading them on github.com, or by pasting a GitHub access token below.
+          Only you (the GitHub account owner) can do that.
+        </p>
+      </section>
+
+      <!-- ===== Status + save ===== -->
+      <section class="panel" id="statusPanel">
+        <div class="row">
+          <div>
+            <h2>Save your changes</h2>
+            <p id="statusText" class="muted"></p>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn btn-primary" id="btnPublish" disabled>Publish to GitHub</button>
+          <button type="button" class="btn btn-secondary" id="btnDownloadJson">Download templates.json</button>
+          <button type="button" class="btn btn-secondary" id="btnDownloadImages" disabled>Download new images</button>
+        </div>
+        <p id="publishLog" class="log" hidden></p>
+      </section>
+
+      <!-- ===== Template list ===== -->
+      <section id="listSection">
+        <div class="row row-between">
+          <h2>Templates</h2>
+          <button type="button" class="btn btn-primary" id="btnAdd">Add template</button>
+        </div>
+        <div id="tplList" class="tpl-list"></div>
+      </section>
+
+      <!-- ===== Template editor ===== -->
+      <section id="editor" class="panel" hidden>
+        <h2 id="editorTitle">Add template</h2>
+
+        <div class="editor-grid">
+
+          <!-- Left: visual position tool -->
+          <div class="editor-canvas">
+            <div class="preview-frame">
+              <canvas id="adminCanvas" width="1080" height="1080" aria-label="Position editor"></canvas>
+            </div>
+            <p class="hint">
+              Drag the <strong>Name</strong> or <strong>Mobile</strong> text to move it. Blue dashed box = reserved strip,
+              pink dashed boxes = the safe area of each field. On a phone, touch outside the picture to scroll.
+            </p>
+
+            <div class="seg" role="group" aria-label="Field to edit">
+              <button type="button" class="seg-btn active" data-field="name">Name</button>
+              <button type="button" class="seg-btn" data-field="mobile">Mobile</button>
+            </div>
+
+            <div class="nudge">
+              <button type="button" class="btn btn-secondary" data-nudge="-1,0" aria-label="Move left">←</button>
+              <button type="button" class="btn btn-secondary" data-nudge="0,-1" aria-label="Move up">↑</button>
+              <button type="button" class="btn btn-secondary" data-nudge="0,1" aria-label="Move down">↓</button>
+              <button type="button" class="btn btn-secondary" data-nudge="1,0" aria-label="Move right">→</button>
+            </div>
+
+            <div class="props" id="props">
+              <label>X <input type="number" id="p-x" data-prop="x"></label>
+              <label>Y <input type="number" id="p-y" data-prop="y"></label>
+              <label>Font size <input type="number" id="p-fontSize" data-prop="fontSize" min="10" max="120"></label>
+              <label>Max width <input type="number" id="p-maxWidth" data-prop="maxWidth" min="0" max="1080"></label>
+              <label>Font
+                <select id="p-fontFamily" data-prop="fontFamily">
+                  <option>Arial</option><option>Helvetica</option><option>Verdana</option><option>Tahoma</option>
+                  <option>Trebuchet MS</option><option>Georgia</option><option>Times New Roman</option><option>Courier New</option>
+                </select>
+              </label>
+              <label>Weight
+                <select id="p-fontWeight" data-prop="fontWeight">
+                  <option value="400">Regular</option><option value="600">Semi-bold</option><option value="700">Bold</option><option value="800">Extra bold</option>
+                </select>
+              </label>
+              <label>Colour <input type="color" id="p-color" data-prop="color"></label>
+              <label>Align
+                <select id="p-align" data-prop="align">
+                  <option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option>
+                </select>
+              </label>
+              <label>Text before <input type="text" id="p-prefix" data-prop="prefix" placeholder="e.g. Mobile: "></label>
+              <label>Letter spacing <input type="number" id="p-letterSpacing" data-prop="letterSpacing" step="0.5" min="-2" max="20"></label>
+            </div>
+
+            <label class="check"><input type="checkbox" id="snap" checked> <span>Snap to the standard position (recommended, keeps all posters consistent)</span></label>
+            <div class="btn-row">
+              <button type="button" class="btn btn-secondary" id="btnResetPos">Reset to standard positions</button>
+            </div>
+
+            <fieldset class="fieldset">
+              <legend>Bottom strip</legend>
+              <label class="check"><input type="checkbox" id="st-repaint"> <span>Paint a clean solid strip over the bottom of the image (recommended)</span></label>
+              <label>Strip colour <input type="color" id="st-color"></label>
+            </fieldset>
+
+            <fieldset class="fieldset">
+              <legend>Test text (only for this preview)</legend>
+              <label>Test name <input type="text" id="s-name" value="Kunal Shah"></label>
+              <label>Test mobile <input type="text" id="s-mobile" value="9978964888"></label>
+            </fieldset>
+          </div>
+
+          <!-- Right: template details -->
+          <div class="editor-form">
+            <label>1080 × 1080 image
+              <input type="file" id="e-image" accept="image/png,image/jpeg,image/webp">
+            </label>
+            <p id="imageInfo" class="hint"></p>
+
+            <label>Title <input type="text" id="e-title" maxlength="80" placeholder="e.g. Car Insurance Renewal"></label>
+            <label>ID <input type="text" id="e-id" maxlength="40" placeholder="car-insurance-renewal"></label>
+            <p class="hint">The ID is used for the image file name and the link. Letters, numbers and dashes only. It cannot be changed after saving.</p>
+
+            <label>Category <select id="e-category"></select></label>
+            <label>Short description (optional) <input type="text" id="e-desc" maxlength="120"></label>
+
+            <label>Predefined message
+              <textarea id="e-message" rows="9"></textarea>
+            </label>
+            <div class="chips" id="varChips" aria-label="Insert variable"></div>
+
+            <label class="check"><input type="checkbox" id="e-active" checked> <span>Active (visible to users)</span></label>
+
+            <p id="editorError" class="error" role="alert"></p>
+            <div class="btn-row">
+              <button type="button" class="btn btn-primary" id="btnSaveTpl">Save template</button>
+              <button type="button" class="btn btn-secondary" id="btnCancelTpl">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Categories ===== -->
+      <section class="panel" id="catSection">
+        <h2>Categories</h2>
+        <div id="catList" class="cat-list"></div>
+        <div class="row">
+          <input type="text" id="newCat" placeholder="New category name" maxlength="40">
+          <button type="button" class="btn btn-secondary" id="btnAddCat">Add category</button>
+        </div>
+      </section>
+
+      <!-- ===== GitHub connection ===== -->
+      <details class="panel" id="ghSection">
+        <summary><strong>Optional: publish straight to GitHub from this page</strong></summary>
+        <p class="muted">
+          Without this, you download the changed files and upload them on github.com (always works, needs no token).
+          With this, the button "Publish to GitHub" saves everything in one click.
+        </p>
+        <ol class="steps">
+          <li>On github.com open <em>Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token</em>.</li>
+          <li>Choose <strong>only your website repository</strong>, and give it <strong>Contents: Read and write</strong> permission. Nothing else.</li>
+          <li>Paste the token below. It is used only from this browser and sent only to api.github.com.</li>
+        </ol>
+        <div class="gh-grid">
+          <label>GitHub user name <input type="text" id="gh-owner" autocomplete="off" placeholder="your-username"></label>
+          <label>Repository name <input type="text" id="gh-repo" autocomplete="off" placeholder="insurance-share"></label>
+          <label>Branch <input type="text" id="gh-branch" autocomplete="off" value="main"></label>
+          <label>Access token <input type="password" id="gh-token" autocomplete="off" placeholder="github_pat_…"></label>
+        </div>
+        <label class="check"><input type="checkbox" id="gh-remember"> <span>Remember these on this device (only on your own phone/computer)</span></label>
+        <div class="btn-row">
+          <button type="button" class="btn btn-secondary" id="btnConnect">Connect and load from GitHub</button>
+        </div>
+        <p id="ghStatus" class="hint"></p>
+      </details>
+
+    </div>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="../js/admin.js"></script>
+</body>
+</html>

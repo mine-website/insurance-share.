@@ -1,0 +1,89 @@
+{
+  "version": 1,
+
+  "settings": {
+    "site": {
+      "title": "Insurance Share",
+      "tagline": "Pick a poster, add your name and number, then share it on WhatsApp."
+    },
+
+    "country": { "code": "+91", "name": "India" },
+
+    "validation": {
+      "name": { "minLength": 2, "maxLength": 40 },
+      "mobile": {
+        "digits": 10,
+        "pattern": "^[6-9][0-9]{9}$",
+        "rejectRepeatedDigits": true,
+        "message": "Enter a valid 10-digit mobile number."
+      }
+    },
+
+    "mobileFormat": "plain",
+
+    "strip": {
+      "repaint": true,
+      "y": 960,
+      "color": "#ffffff",
+      "accentColor": "#4338ca",
+      "accentHeight": 4
+    },
+
+    "defaultFields": {
+      "name": {
+        "x": 48, "y": 1022,
+        "fontSize": 36, "fontFamily": "Arial", "fontWeight": "700", "color": "#111827",
+        "align": "left", "maxWidth": 552, "prefix": "Name: ", "letterSpacing": 0
+      },
+      "mobile": {
+        "x": 1032, "y": 1022,
+        "fontSize": 36, "fontFamily": "Arial", "fontWeight": "700", "color": "#111827",
+        "align": "right", "maxWidth": 400, "prefix": "Mobile: ", "letterSpacing": 0
+      }
+    }
+  },
+
+  "categories": [
+    { "id": "motor", "name": "Motor Insurance" },
+    { "id": "health", "name": "Health Insurance" },
+    { "id": "life", "name": "Life Insurance" },
+    { "id": "commercial", "name": "Commercial Vehicle" },
+    { "id": "awareness", "name": "General Awareness" },
+    { "id": "festival", "name": "Festival" },
+    { "id": "business", "name": "Business" },
+    { "id": "customer", "name": "Customer Awareness" }
+  ],
+
+  "templates": [
+    {
+      "id": "sample-car-renewal",
+      "title": "Sample: Car Insurance Renewal",
+      "category": "motor",
+      "description": "Renewal reminder for vehicle owners",
+      "image": "images/templates/sample-car-renewal.webp",
+      "thumb": "images/templates/sample-car-renewal-thumb.webp",
+      "message": "🚗 Insurance Renewal Reminder\n\nHello {NAME},\n\nPlanning your vehicle insurance renewal in advance can help avoid last-minute problems.\n\nFor assistance:\n📞 {MOBILE}",
+      "active": true
+    },
+    {
+      "id": "sample-health-awareness",
+      "title": "Sample: Health Insurance Awareness",
+      "category": "health",
+      "description": "Why every family needs health cover",
+      "image": "images/templates/sample-health-awareness.webp",
+      "thumb": "images/templates/sample-health-awareness-thumb.webp",
+      "message": "🏥 Health Insurance Awareness\n\nHello {NAME},\n\nA medical emergency should never become a financial emergency. Let's review your family's health cover together.\n\n📞 {MOBILE}",
+      "active": true
+    },
+    {
+      "id": "sample-festival",
+      "title": "Sample: Festival Greeting",
+      "category": "festival",
+      "description": "Festival wishes with a safety message",
+      "image": "images/templates/sample-festival.webp",
+      "thumb": "images/templates/sample-festival-thumb.webp",
+      "message": "🪔 નમસ્તે,\n\nતમને અને તમારા પરિવારને તહેવારની હાર્દિક શુભકામનાઓ!\n\n– {NAME}\n📞 {MOBILE}",
+      "active": true
+    }
+  ]
+}
